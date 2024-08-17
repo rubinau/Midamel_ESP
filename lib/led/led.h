@@ -14,6 +14,8 @@ public:
     // Constructor to initialize the RGB pins and active high/low setting
     LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh);
 
+    void setupLed();
+
     // Function to enable the red component
     void enableRed(bool state);
 

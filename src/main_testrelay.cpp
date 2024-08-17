@@ -4,8 +4,9 @@
 #include <led.h> 
 #include <pin_unit.h>
 
-// Create an instance of the LedRGB class
-LedRGB led(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false); // Adjust the pins according to your setup
+// LedRGB class
+LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false);
+LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false);
 
 void setup() {
     // Initialize Serial
@@ -22,7 +23,10 @@ void setup() {
     Serial.println("LoRa Initializing Successful!");
 
     // Initialize RGB LED
-    led.disableAll(); // Ensure the LED is off initially
+    led1.setupLed();
+    led2.setupLed();
+    led1.disableAll();
+    led2.disableAll();
 }
 
 void loop() {
@@ -32,19 +36,24 @@ void loop() {
 
     if (currentTime - lastToggleTime >= 1000) {
         lastToggleTime = currentTime;
-        led.disableAll();
-
+        
+        char buff[50];
+        sprintf(buff, "TICK %d", currentColor);
+        Serial.println(buff);
+        led1.disableAll();
+        led2.disableAll();
         // Toggle RGB
         if (currentColor == 0) {
-            led.enableRed(true);
+            led1.enableRed(true);
+            led2.enableRed(true);
         } else if (currentColor == 1) {
-            led.enableGreen(true);
+            led1.enableGreen(true);
+            led2.enableGreen(true);
         } else if (currentColor == 2) {
-            led.enableBlue(true);
+            led1.enableBlue(true);
+            led2.enableBlue(true);
         }
 
         currentColor = (currentColor + 1) % 3;
     }
-
-    delay(100);
 }
