@@ -13,9 +13,9 @@
 #define Submit_LED 18
 
 #define Button_01 19
-#define LED_01_GRN 17
-#define LED_01_YLW 16
-#define LED_01_RED 15
+#define LED_01_GRN 20
+#define LED_01_YLW 47
+#define LED_01_RED 48
 
 #define Button_02 35
 #define LED_02_GRN 36
@@ -27,10 +27,10 @@
 #define LED_03_YLW 41
 #define LED_03_RED 42
 
-#define Button_04 9
-#define LED_04_GRN 20
-#define LED_04_YLW 47
-#define LED_04_RED 48
+#define Button_04 3
+#define LED_04_GRN 17
+#define LED_04_YLW 16
+#define LED_04_RED 15
 
 #define LCD_SDA 8
 #define LCD_SCL 9
