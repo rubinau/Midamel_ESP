@@ -8,8 +8,6 @@
 LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false);
 LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false);
 
-
-
 void setup() {
     // Initialize Serial
     Serial.begin(115200);

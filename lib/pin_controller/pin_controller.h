@@ -9,8 +9,8 @@
 
 #define Reset_LED 4
 #define Reset_Button reset
-#define Submit_Button 6
-#define Submit_LED 18
+#define Submit_Button 18
+#define Submit_LED 6
 
 #define Button_01 19
 #define LED_01_GRN 20

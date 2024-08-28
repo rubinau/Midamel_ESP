@@ -22,6 +22,7 @@ LedRGB led_02(LED_02_RED,LED_02_GRN,LED_02_YLW,true);
 LedRGB led_03(LED_03_RED,LED_03_GRN,LED_03_YLW,true);
 LedRGB led_04(LED_04_RED,LED_04_GRN,LED_04_YLW,true);
 
+unsigned long last_time;
 void setup(){
     // LORA
     SPIClass customSPI(1);
@@ -50,6 +51,7 @@ void setup(){
     pinMode(Button_04, INPUT_PULLUP);
     pinMode(Submit_Button, INPUT_PULLUP);
     pinMode(Submit_LED, OUTPUT);
+    last_time = 0;
 }
 
 Package paket;
@@ -59,51 +61,81 @@ int but1_count = 0, but2_count = 0, but3_count = 0, but4_count = 0, butsub_on = 
 void loop(){
     // Handle Button 1
     // Serial.println("..");
-    if (digitalRead(Button_01) == LOW) {
+    if ((digitalRead(Button_01) == LOW) && (but1_state == false)) {
         but1_state = true;
         but1_count++;
         Serial.println("Button 1 pressed");
+        last_time = millis();
     } else if (digitalRead(Button_01) == HIGH) {
         but1_state = false;
         //  Serial.println("Button 1 not");
     }
     
-    // Update LED 1 based on button 1 state
-
-
     // Handle Button 2
-    if (digitalRead(Button_02) == LOW) {
+    if ((digitalRead(Button_02) == LOW) && (but2_state == false)) {
         but2_state = true;
         but2_count++;
         Serial.println("Button 2 pressed");
+        last_time = millis();
     } else if (digitalRead(Button_02) == HIGH) {
         but2_state = false;
         // Serial.println("Button 2 not");
     }
-
-    
-
     // Handle Button 3
-    if (digitalRead(Button_03) == LOW) {
+    if ((digitalRead(Button_03) == LOW) && (but3_state == false)) {
         but3_state = true;
         but3_count++;
         Serial.println("Button 3 pressed");
+        last_time = millis();
     } else if (digitalRead(Button_03) == HIGH) {
         but3_state = false;
         //  Serial.println("Button 3 not");
     }
-
-   
-
     // Handle Button 4
-    if (digitalRead(Button_04) == LOW) {
+    if ((digitalRead(Button_04) == LOW ) && (but4_state == false)) {
         but4_state = true;
         but4_count++;
         Serial.println("Button 4 pressed");
+        last_time = millis();
     } else if (digitalRead(Button_04) == HIGH) {
         but4_state = false;
         //  Serial.println("Button 4 not");
     }
+    // Handle Button Submit
+    if ((digitalRead(Submit_Button) == LOW ) && (butsub_state == false)) {
+        butsub_state = true;
+        butsub_on = 1;
+        // Send the packet
+        LoRa.beginPacket();
+        Serial.println("Button Submit pressed");
+        paket.kelasA = but1_count % 4;
+        paket.kelasB = but2_count % 4;
+        paket.kelasC = but3_count % 4;
+        paket.kelasD = but4_count % 4;
+        String packet = toSTR(paket);
+        Serial.println(packet);
+        LoRa.print(packet);
+        LoRa.endPacket();
+    } else if (digitalRead(Submit_Button) == HIGH) {
+        butsub_on = false;
+        //  Serial.println("Button 4 not");
+    }
 
-    delay(1);  
+    if (millis() - last_time > 5000){
+        led_01.disableAll();
+        led_02.disableAll();
+        led_03.disableAll();
+        led_04.disableAll();
+        // led_01.updateState(paket.kelasA);
+        // led_02.updateState(paket.kelasB);
+        // led_03.updateState(paket.kelasC);
+        // led_04.updateState(paket.kelasD);
+    } else {
+        led_01.updateState(but1_count);
+        led_02.updateState(but2_count);
+        led_03.updateState(but3_count);
+        led_04.updateState(but4_count);
+    }
+    digitalWrite(Submit_LED, butsub_on);
+    delay(100);
 }

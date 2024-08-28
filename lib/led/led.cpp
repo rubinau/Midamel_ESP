@@ -48,3 +48,27 @@ void LedRGB::disableAll() {
     writePin(greenPin, LOW);
     writePin(bluePin, LOW);
 }
+
+void LedRGB::updateState(int count) {
+    switch (count % 4) {
+        case 0:
+            disableAll();  // Null state, all LEDs off
+            break;
+        
+        case 1:
+            enableRed(false);
+            enableGreen(true); // Green state
+            enableBlue(false);
+            break;
+        case 2:
+            enableRed(false);
+            enableGreen(false);
+            enableBlue(true); // Blue state
+            break;
+        case 3:
+            enableRed(true); // Red state
+            enableGreen(false);
+            enableBlue(false);
+            break;
+    }
+}

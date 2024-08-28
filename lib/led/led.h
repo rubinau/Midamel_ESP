@@ -27,4 +27,6 @@ public:
 
     // Function to disable all components
     void disableAll();
+
+    void updateState(int count);
 };
