@@ -57,21 +57,44 @@ void loop() {
         int separator1 = packet.indexOf(';');
         int separator2 = packet.indexOf(';', separator1 + 1);
         int separator3 = packet.indexOf(';', separator2 + 1);
-        int separator4 = packet.indexOf(';', separator3 + 1);
+        // int separator4 = packet.indexOf(';', separator3 + 1);
 
         if (separator1 != -1 && separator2 != -1 && separator3 != -1) {
             String tkStr = packet.substring(0, separator1);
             String sdStr = packet.substring(separator1 + 1, separator2);
             String smpStr = packet.substring(separator2 + 1, separator3);
-            String smaStr = packet.substring(separator3 + 1, separator4);
+            // String smaStr = packet.substring(separator3 + 1, separator4);
         
             int tkValue = tkStr.toInt();
             int sdValue = sdStr.toInt();
             int smpValue = smpStr.toInt();
-            int smaValue = smaStr.toInt();
+            // int smaValue = smaStr.toInt();
+            int smaValue = 2;
 
             led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
             led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            delay(300);
+            led1.disableAll();
+            led2.disableAll();
+            delay(300);
+            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            delay(300);
+            led1.disableAll();
+            led2.disableAll();
+            delay(300);
+            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            delay(300);
+            led1.disableAll();
+            led2.disableAll();
+            delay(300);
+            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            delay(300);
+            led1.disableAll();
+            led2.disableAll();
+
             // led1.enableRed(redValue == 1);
             // led1.enableGreen(greenValue == 1);
             // led1.enableBlue(blueValue == 1);
@@ -80,6 +103,7 @@ void loop() {
             // led2.enableGreen(greenValue == 1);
             // led2.enableBlue(blueValue == 1);
         }
+        
     }
 
     delay(100); // Small delay to avoid excessive LoRa checking

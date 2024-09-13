@@ -72,7 +72,7 @@ void LedRGB::updateState(int count) {
             enableBlue(false);
             break;
         default:
-        
+            break;
     }
 }
 
