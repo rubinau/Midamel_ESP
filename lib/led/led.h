@@ -7,12 +7,13 @@ private:
     uint8_t greenPin;
     uint8_t bluePin;
     bool activeHigh;
+    int kelas;
 
     void writePin(uint8_t pin, bool state);
 
 public:
     // Constructor to initialize the RGB pins and active high/low setting
-    LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh);
+    LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh, int kelaz);
 
     void setupLed();
 
@@ -29,4 +30,6 @@ public:
     void disableAll();
 
     void updateState(int count);
+
+    void updateFromString(int kelas_tk, int kelas_sd, int kelas_smp, int kelas_sma);
 };

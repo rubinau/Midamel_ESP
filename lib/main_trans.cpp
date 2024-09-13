@@ -17,12 +17,12 @@ String toSTR(Package paket){
     return str;
 }
 
-LedRGB led_01(LED_01_RED,LED_01_GRN,LED_01_YLW,true);
-LedRGB led_02(LED_02_RED,LED_02_GRN,LED_02_YLW,true);
-LedRGB led_03(LED_03_RED,LED_03_GRN,LED_03_YLW,true);
-LedRGB led_04(LED_04_RED,LED_04_GRN,LED_04_YLW,true);
+LedRGB led_01(LED_01_RED,LED_01_GRN,LED_01_YLW,true,0);
+LedRGB led_02(LED_02_RED,LED_02_GRN,LED_02_YLW,true,0);
+LedRGB led_03(LED_03_RED,LED_03_GRN,LED_03_YLW,true,0);
+LedRGB led_04(LED_04_RED,LED_04_GRN,LED_04_YLW,true,0);
 
-unsigned long last_time;
+unsigned long last_time, last_submit;
 void setup(){
     // LORA
     SPIClass customSPI(1);
@@ -52,6 +52,7 @@ void setup(){
     pinMode(Submit_Button, INPUT_PULLUP);
     pinMode(Submit_LED, OUTPUT);
     last_time = 0;
+    last_submit = 0;
 }
 
 Package paket;
@@ -116,12 +117,13 @@ void loop(){
         Serial.println(packet);
         LoRa.print(packet);
         LoRa.endPacket();
+        last_submit = millis();
     } else if (digitalRead(Submit_Button) == HIGH) {
         butsub_on = false;
         //  Serial.println("Button 4 not");
     }
 
-    if (millis() - last_time > 5000){
+    if (millis() - last_time > 30000){
         led_01.disableAll();
         led_02.disableAll();
         led_03.disableAll();
@@ -135,6 +137,11 @@ void loop(){
         led_02.updateState(but2_count);
         led_03.updateState(but3_count);
         led_04.updateState(but4_count);
+    }
+
+    if (last_submit - millis() < 3000) {
+        // Kedap kedip ketika submit - LED SEMUAs
+        //  
     }
     digitalWrite(Submit_LED, butsub_on);
     delay(100);

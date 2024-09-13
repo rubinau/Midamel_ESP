@@ -5,8 +5,8 @@
 #include <pin_unit.h>
 
 // LedRGB class
-LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false);
-LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false);
+LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false,0);
+LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false,0);
 
 void setup() {
     // Initialize Serial

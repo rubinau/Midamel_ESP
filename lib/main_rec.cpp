@@ -4,9 +4,15 @@
 #include <led.h> 
 #include <pin_unit.h>
 
+// 0: TK, 1: SD, 2:SMP, 3:SMA
+#define TK 0
+#define SD 1
+#define SMP 2
+#define SMA 3
+
 // Create an instance of the LedRGB class
-LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false);
-LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false);
+LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false, TK);
+LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false, SMA);
 
 void setup() {
     // Initialize Serial
@@ -51,25 +57,28 @@ void loop() {
         int separator1 = packet.indexOf(';');
         int separator2 = packet.indexOf(';', separator1 + 1);
         int separator3 = packet.indexOf(';', separator2 + 1);
+        int separator4 = packet.indexOf(';', separator3 + 1);
 
         if (separator1 != -1 && separator2 != -1 && separator3 != -1) {
-            String redStr = packet.substring(0, separator1);
-            String greenStr = packet.substring(separator1 + 1, separator2);
-            String blueStr = packet.substring(separator2 + 1, separator3);
+            String tkStr = packet.substring(0, separator1);
+            String sdStr = packet.substring(separator1 + 1, separator2);
+            String smpStr = packet.substring(separator2 + 1, separator3);
+            String smaStr = packet.substring(separator3 + 1, separator4);
         
-            int redValue = redStr.toInt();
-            int greenValue = greenStr.toInt();
-            int blueValue = blueStr.toInt();
+            int tkValue = tkStr.toInt();
+            int sdValue = sdStr.toInt();
+            int smpValue = smpStr.toInt();
+            int smaValue = smaStr.toInt();
 
-            // Set the LED color
-            // Map the received values to either HIGH or LOW as needed
-            led1.enableRed(redValue == 1);
-            led1.enableGreen(greenValue == 1);
-            led1.enableBlue(blueValue == 1);
+            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
+            // led1.enableRed(redValue == 1);
+            // led1.enableGreen(greenValue == 1);
+            // led1.enableBlue(blueValue == 1);
 
-            led2.enableRed(redValue == 1);
-            led2.enableGreen(greenValue == 1);
-            led2.enableBlue(blueValue == 1);
+            // led2.enableRed(redValue == 1);
+            // led2.enableGreen(greenValue == 1);
+            // led2.enableBlue(blueValue == 1);
         }
     }
 

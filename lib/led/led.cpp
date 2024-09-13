@@ -2,12 +2,13 @@
 #include <led.h>
 
 // Constructor to initialize the RGB pins and active high/low setting
-LedRGB::LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh) 
+LedRGB::LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh,int kelaz) 
     : redPin(rPin), greenPin(gPin), bluePin(bPin), activeHigh(isActiveHigh) {
         redPin = rPin;
         bluePin = bPin;
         greenPin = gPin;
         activeHigh = isActiveHigh;
+        kelas = kelaz;
 }
 
 // Private method to write to a pin based on activeHigh setting
@@ -70,5 +71,27 @@ void LedRGB::updateState(int count) {
             enableGreen(false);
             enableBlue(false);
             break;
+        default:
+        
+    }
+}
+
+void LedRGB::updateFromString(int count_tk, int count_sd, int count_smp, int count_sma){
+    switch (kelas)
+    {
+    case 0:
+        updateState(count_tk);
+        break;
+    case 1:
+        updateState(count_sd);
+        break;
+    case 2:
+        updateState(count_smp);
+        break;
+    case 3:
+        updateState(count_sma);
+        break;
+    default:
+        break;
     }
 }
