@@ -2,7 +2,7 @@
 #include <led.h>
 
 // Constructor to initialize the RGB pins and active high/low setting
-LedRGB::LedRGB(int gPin, int bPin, int rPin, bool isActiveHigh, int kelaz)
+LedRGB::LedRGB(int bPin, int rPin, int gPin, bool isActiveHigh, int kelaz)
     : redPin(rPin), greenPin(gPin), bluePin(bPin), activeHigh(isActiveHigh)
 {
     redPin = rPin;
