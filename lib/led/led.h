@@ -33,3 +33,13 @@ public:
 
     void updateFromString(int kelas_tk, int kelas_sd, int kelas_smp, int kelas_sma);
 };
+
+typedef struct
+{
+    int pin;
+    int times;
+    int delay_time;
+    bool active_high;
+}led_param;
+
+void callBlinkLed(int led, int times, int delay_time, bool activeHigh);

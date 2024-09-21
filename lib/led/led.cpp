@@ -58,16 +58,19 @@ void LedRGB::updateState(int count) {
         
         case 1:
             enableRed(false);
-            enableGreen(true); // Green state
+            //enableGreen(true); // Green state
+            callBlinkLed(greenPin,5,200,activeHigh);
             enableBlue(false);
             break;
         case 2:
             enableRed(false);
             enableGreen(false);
-            enableBlue(true); // Blue state
+            //enableBlue(true); // Blue state
+            callBlinkLed(bluePin,5,200,activeHigh);
             break;
         case 3:
-            enableRed(true); // Red state
+            //enableRed(true); // Red state
+            callBlinkLed(redPin,5,200,activeHigh);
             enableGreen(false);
             enableBlue(false);
             break;
@@ -94,4 +97,35 @@ void LedRGB::updateFromString(int count_tk, int count_sd, int count_smp, int cou
     default:
         break;
     }
+}
+
+void blinkLED(int led, int times, int delay_time, bool active_high)
+{
+    for (int i = 0; i < times; i++)
+    {
+        digitalWrite(led, active_high);
+        vTaskDelay(delay_time);
+        digitalWrite(led, !active_high);
+        vTaskDelay(delay_time);
+    }
+    digitalWrite(led,active_high);
+    vTaskDelay(3000);
+    digitalWrite(led,!active_high);
+}
+
+void vTaskLED(void *parameter)
+{
+    led_param params = *((led_param *)parameter);
+    blinkLED(params.pin,params.times,params.delay_time,params.active_high);
+    vTaskDelete(NULL);
+}
+
+void callBlinkLed(int led, int times, int delay_time, bool active_high)
+{
+    led_param submit;
+    submit.pin = led;
+    submit.times = times;
+    submit.delay_time = delay_time;
+    submit.active_high = active_high;
+    xTaskCreate(vTaskLED, "LED TASK", 1024, &submit, 1, NULL);
 }
