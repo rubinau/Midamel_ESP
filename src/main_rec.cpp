@@ -11,8 +11,10 @@
 #define SMA 3
 
 // Create an instance of the LedRGB class
-LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false, TK);
-LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false, SMA);
+LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false, SMA);
+LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false, SMP);
+
+long int timer_last_receive;
 
 void setup() {
     // Initialize Serial
@@ -23,6 +25,7 @@ void setup() {
     Serial.printf("%08X\n", (uint32_t)chipid);
     
     // Initialize LoRa
+    
     LoRa.setPins(LoRa_NSS, LoRa_RST, LoRa_DI00);
     if (!LoRa.begin(433E6)) {
         Serial.println("Failed to initialize LoRa.");
@@ -30,11 +33,13 @@ void setup() {
     }
     LoRa.setSyncWord(0xF1);
     Serial.println("LoRa Initializing Successful!");
+    timer_last_receive = millis();
 
     led1.setupLed();
     led1.disableAll();
     led2.setupLed();
     led2.disableAll();
+   
 }
 
 
@@ -48,6 +53,7 @@ void loop() {
             packet += (char)LoRa.read();
         }
         
+        
         // Print received packet for debugging
         Serial.print("Received packet: ");
         Serial.println(packet);
@@ -57,51 +63,27 @@ void loop() {
         int separator1 = packet.indexOf(';');
         int separator2 = packet.indexOf(';', separator1 + 1);
         int separator3 = packet.indexOf(';', separator2 + 1);
-        // int separator4 = packet.indexOf(';', separator3 + 1);
+        int separator4 = packet.indexOf(';', separator3 + 1);
 
-        if (separator1 != -1 && separator2 != -1 && separator3 != -1) {
-            String tkStr = packet.substring(0, separator1);
-            String sdStr = packet.substring(separator1 + 1, separator2);
+        if (separator1 != -1 && separator2 != -1 && separator3 != -1 && separator4 != -1 && millis() - timer_last_receive > 5000) {
+            String tkStr =  packet.substring(0, separator1);
+            String sdStr =  packet.substring(separator1 + 1, separator2);
             String smpStr = packet.substring(separator2 + 1, separator3);
-            // String smaStr = packet.substring(separator3 + 1, separator4);
+            String smaStr = packet.substring(separator3 + 1, separator4);
         
             int tkValue = tkStr.toInt();
             int sdValue = sdStr.toInt();
             int smpValue = smpStr.toInt();
-            // int smaValue = smaStr.toInt();
-            int smaValue = 2;
+            int smaValue = smaStr.toInt();
+            if (tkValue != 0 || sdValue != 0 || smpValue != 0 || smaValue != 0){
+                timer_last_receive = millis();
+            }
+            Serial.printf("Parsed %d;%d;%d;%d;\n", tkValue,sdValue,smpValue,smaValue);
+            //int smaValue = 2;
 
             led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
             led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            delay(300);
-            led1.disableAll();
-            led2.disableAll();
-            delay(300);
-            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            delay(300);
-            led1.disableAll();
-            led2.disableAll();
-            delay(300);
-            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            delay(300);
-            led1.disableAll();
-            led2.disableAll();
-            delay(300);
-            led1.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            led2.updateFromString(tkValue,sdValue,smpValue,smaValue);
-            delay(300);
-            led1.disableAll();
-            led2.disableAll();
-
-            // led1.enableRed(redValue == 1);
-            // led1.enableGreen(greenValue == 1);
-            // led1.enableBlue(blueValue == 1);
-
-            // led2.enableRed(redValue == 1);
-            // led2.enableGreen(greenValue == 1);
-            // led2.enableBlue(blueValue == 1);
+           
         }
         
     }
