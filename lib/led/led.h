@@ -3,17 +3,22 @@
 
 class LedRGB {
 private:
-    uint8_t redPin;
-    uint8_t greenPin;
-    uint8_t bluePin;
+    int redPin;
+    int greenPin;
+    int bluePin;
     bool activeHigh;
     int kelas;
 
-    void writePin(uint8_t pin, bool state);
+    int kelasA;
+    int kelasB;
+    int kelasC;
+    int kelasD;
+
+    void writePin(int pin, bool state);
 
 public:
     // Constructor to initialize the RGB pins and active high/low setting
-    LedRGB(uint8_t rPin, uint8_t gPin, uint8_t bPin, bool isActiveHigh, int kelaz);
+    LedRGB(int rPin, int gPin, int bPin, bool isActiveHigh, int kelaz);
 
     void setupLed();
 
@@ -36,10 +41,12 @@ public:
 
 typedef struct
 {
-    int pin;
+    int pin1;
+    int pin2;
     int times;
     int delay_time;
     bool active_high;
 }led_param;
 
 void callBlinkLed(int led, int times, int delay_time, bool activeHigh);
+void callBlinkLed(int led1, int led2, int times, int delay_time, bool activeHigh);
