@@ -3,6 +3,8 @@
 #include <LoRa.h>
 #include <led.h> 
 #include <pin_unit.h>
+#include <esp_task_wdt.h>
+#define WDT_TIMEOUT 20     // define a 3 seconds WDT (Watch Dog Timer)
 
 // 0: TK, 1: SD, 2:SMP, 3:SMA
 #define TK 0
@@ -11,10 +13,11 @@
 #define SMA 3
 
 // Create an instance of the LedRGB class
-LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false, SMA);
-LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false, SMP);
+LedRGB led1(SSR_1_CH1, SSR_1_CH2, SSR_1_CH3, false, SD);
+LedRGB led2(SSR_2_CH1, SSR_2_CH2, SSR_2_CH3, false, SD);
 
 long int timer_last_receive;
+unsigned long timer_ping;
 
 void setup() {
     // Initialize Serial
@@ -39,12 +42,21 @@ void setup() {
     led1.disableAll();
     led2.setupLed();
     led2.disableAll();
-   
+    esp_task_wdt_init(WDT_TIMEOUT, true);  // enable panic so ESP32 restarts
+    esp_task_wdt_add(NULL); // add current thread to WDT watch
+    
+    timer_ping = millis();
 }
 
 
 void loop() {
     // Check if a packet is available
+    esp_task_wdt_reset();            // Added to repeatedly reset the Watch Dog Timer
+    // Serial.println("PING");
+    // if (millis() - timer_ping > 5000){
+    //     Serial.println("DELAY");
+    //     delay(500000);
+    // }
     int packetSize = LoRa.parsePacket();
     if (packetSize) {
         // Read the packet

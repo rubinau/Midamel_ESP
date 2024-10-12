@@ -22,22 +22,24 @@ LedRGB led_02(LED_02_RED,LED_02_GRN,LED_02_YLW,true,0);
 LedRGB led_03(LED_03_RED,LED_03_GRN,LED_03_YLW,true,0);
 LedRGB led_04(LED_04_RED,LED_04_GRN,LED_04_YLW,true,0);
 
+LoRaClass thisLoRa;
+
 unsigned long last_time, last_submit;
 void setup(){
     // LORA
     SPIClass customSPI(1);
     customSPI.begin(LoRa_SCK, LoRa_MISO, LoRa_MOSI, LoRa_NSS);
     // Set custom SPI and pins for LoRa
-    LoRa.setSPI(customSPI);
-    LoRa.setPins(LoRa_NSS, LoRa_RST, LoRa_DI00); 
+    thisLoRa.setSPI(customSPI);
+    thisLoRa.setPins(LoRa_NSS, LoRa_RST, LoRa_DI00); 
     Serial.begin(115200);
     Serial.println("LoRa Sender");
      
-    while (!LoRa.begin(433E6)) {
+    while (!thisLoRa.begin(433E6)) {
       Serial.println(".");
       delay(500);
     }
-    LoRa.setSyncWord(0xF1);
+    thisLoRa.setSyncWord(0xF1);
     Serial.println("LoRa Initializing Successful!");
 
     // CONTROL BUTTON
@@ -107,23 +109,33 @@ void loop(){
         butsub_state = true;
         butsub_on = 1;
         // Send the packet
-        LoRa.beginPacket();
         Serial.println("Button Submit pressed");
+        thisLoRa.beginPacket();
+        Serial.println("Button Submit pressedeed");
         paket.kelasA = but1_count % 4;
         paket.kelasB = but2_count % 4;
         paket.kelasC = but3_count % 4;
         paket.kelasD = but4_count % 4;
-        String packet = toSTR(paket);
+        String packet;
+        packet = toSTR(paket);
         Serial.println(packet);
-        LoRa.print(packet);
-        LoRa.endPacket();
+        thisLoRa.print(packet);
+        thisLoRa.endPacket();
         last_submit = millis();
+        but1_count = 0;
+        but2_count = 0;
+        but3_count = 0;
+        but4_count = 0;
+        callBlinkLed(Submit_LED,10,500,true);
+        //digitalWrite(Submit_LED, 1);
     } else if (digitalRead(Submit_Button) == HIGH) {
         butsub_on = false;
-        //  Serial.println("Button 4 not");
+        butsub_state = false;
+        //digitalWrite(Submit_LED, 0);
+        //Serial.println("Button 4 not");
     }
 
-    if (millis() - last_time > 30000){
+    if (millis() - last_time > 10000){
         led_01.disableAll();
         led_02.disableAll();
         led_03.disableAll();
@@ -133,16 +145,24 @@ void loop(){
         // led_03.updateState(paket.kelasC);
         // led_04.updateState(paket.kelasD);
     } else {
-        led_01.updateState(but1_count);
-        led_02.updateState(but2_count);
-        led_03.updateState(but3_count);
-        led_04.updateState(but4_count);
+        led_01.updateStatePassive(but1_count);
+        led_02.updateStatePassive(but2_count);
+        led_03.updateStatePassive(but3_count);
+        led_04.updateStatePassive(but4_count);
     }
 
     if (last_submit - millis() < 3000) {
-        // Kedap kedip ketika submit - LED SEMUAs
-        //  
+        //thisLoRa.beginPacket();
+        // thisLoRa.print(packet);
+        //thisLoRa.endPacket();
+        delay(500);
+    } else {
+        paket.kelasA = but1_count % 4;
+        paket.kelasB = but2_count % 4;
+        paket.kelasC = but3_count % 4;
+        paket.kelasD = but4_count % 4;
+        // packet = toSTR(paket);
     }
-    digitalWrite(Submit_LED, butsub_on);
+    //digitalWrite(Submit_LED, 1);
     delay(100);
 }

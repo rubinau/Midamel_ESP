@@ -92,6 +92,37 @@ void LedRGB::updateState(int count)
     }
 }
 
+void LedRGB::updateStatePassive(int count)
+{
+    switch (count % 4)
+    {
+    case 0:
+        disableAll(); // Null state, all LEDs off
+        break;
+
+    case 2:
+        enableRed(false);
+        enableGreen(true); // Green state
+        enableBlue(false);
+        break;
+    case 3:
+        enableRed(false);
+        enableGreen(false);
+        enableBlue(true); // Blue state
+        //callBlinkLed(greenPin,redPin, 5,800,activeHigh);
+        break;
+    case 1:
+        enableRed(true); // Red state
+        //callBlinkLed(redPin, 5, 800, activeHigh);
+        enableGreen(false);
+        enableBlue(false);
+        break;
+    default:
+        break;
+    }
+}
+
+
 #define UPDATE_IF_CHANGE 1
 void LedRGB::updateFromString(int count_tk, int count_sd, int count_smp, int count_sma)
 {
@@ -135,10 +166,11 @@ void blinkLED(int led, int times, int delay_time, bool active_high)
 {
     for (int i = 0; i < times; i++)
     {
-        // Serial.printf("Blinking %d\n", led);
-        // Serial.println("Blinking");
+        Serial.printf("Blinking %d\n", led);
+        Serial.println("Blinking");
 
         digitalWrite(led, active_high);
+        //vTaskDelay(1000);
         vTaskDelay(delay_time);
         digitalWrite(led, !active_high);
         vTaskDelay(delay_time);

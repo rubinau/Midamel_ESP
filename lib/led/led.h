@@ -36,6 +36,8 @@ public:
 
     void updateState(int count);
 
+    void updateStatePassive(int count);
+
     void updateFromString(int kelas_tk, int kelas_sd, int kelas_smp, int kelas_sma);
 };
 

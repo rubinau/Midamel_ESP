@@ -27,7 +27,7 @@
 #define LED_03_YLW 41
 #define LED_03_RED 42
 
-#define Button_04 3
+#define Button_04 44
 #define LED_04_GRN 17
 #define LED_04_YLW 16
 #define LED_04_RED 15
