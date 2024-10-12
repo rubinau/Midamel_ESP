@@ -65,9 +65,9 @@ void loop() {
         int separator3 = packet.indexOf(';', separator2 + 1);
         int separator4 = packet.indexOf(';', separator3 + 1);
 
-        if (separator1 != -1 && separator2 != -1 && separator3 != -1 && millis() - timer_last_receive > 8000) {
-            String tkStr = packet.substring(0, separator1);
-            String sdStr = packet.substring(separator1 + 1, separator2);
+        if (separator1 != -1 && separator2 != -1 && separator3 != -1 && separator4 != -1 && millis() - timer_last_receive > 5000) {
+            String tkStr =  packet.substring(0, separator1);
+            String sdStr =  packet.substring(separator1 + 1, separator2);
             String smpStr = packet.substring(separator2 + 1, separator3);
             String smaStr = packet.substring(separator3 + 1, separator4);
         
